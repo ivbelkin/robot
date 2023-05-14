@@ -1,0 +1,5 @@
+FROM ros:noetic-ros-core
+
+RUN apt-get update && apt-get install --no-install-recommends -y \
+        ros-noetic-rplidar-ros && \
+    rm -rf /var/lib/apt/lists/*
