@@ -20,3 +20,16 @@ services:
     devices:
       - "/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0:/dev/rplidar"
     command: rosrun rplidar_ros rplidarNode _serial_port:=/dev/rplidar _frame_id:=laser _serial_baudrate:=115200
+
+  arduino:
+    build:
+      context: .
+      dockerfile: Dockerfile.arduino
+    image: arduino
+    container_name: arduino
+    network_mode: host
+    ipc: host
+    tty: true
+    devices:
+      - "/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0:/dev/arduino"
+    command: rosrun rosserial_arduino serial_node.py /dev/arduino
