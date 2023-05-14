@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  roscore:
+    image: ros:noetic-ros-core
+    container_name: roscore
+    network_mode: host
+    ipc: host
+    tty: true
+    command: roscore

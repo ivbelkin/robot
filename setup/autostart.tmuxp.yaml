@@ -1,0 +1,23 @@
+session_name: robot
+
+start_directory: /home/user/workspace/base_ws/src/robot
+
+global_options:
+  default-shell: /bin/bash
+  default-command: /bin/bash
+
+environment:
+  EDITOR: /bin/nano
+
+shell_command_before:
+  - export PATH="/usr/local/bin:${PATH}"
+
+windows:
+  - window_name: runtime
+    layout: tiled
+    panes:
+      - docker-compose -f setup/docker-compose-runtime.yaml up roscore
+
+  - window_name: jtop
+    panes:
+      - sleep 60; jtop
