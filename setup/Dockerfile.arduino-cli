@@ -1,0 +1,23 @@
+FROM ubuntu:22.04
+
+RUN apt-get update && apt-get install --no-install-recommends -y \
+        git \
+        zip \
+        curl \
+        ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install arduino-cli
+RUN curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh \
+    | BINDIR=/usr/local/bin sh
+
+RUN arduino-cli core update-index && \
+    arduino-cli core install arduino:avr && \
+    arduino-cli lib install "Rosserial Arduino Library@0.7.9"
+ENV ARDUINO_LIBRARY_ENABLE_UNSAFE_INSTALL=true
+
+# Install PS2X library
+RUN git clone https://github.com/madsci1016/Arduino-PS2X.git && \
+    cd Arduino-PS2X && zip -r PS2X_lib.zip PS2X_lib && \
+    arduino-cli lib install --zip-path PS2X_lib.zip && \
+    cd ../ && rm -rf Arduino-PS2X

@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  arduino-cli:
+    build:
+      context: ..
+      dockerfile: setup/Dockerfile.arduino-cli
+    image: arduino-cli
+    container_name: arduino-cli
+    tty: true
+
+  arduino-flash:
+    image: arduino-cli:latest
+    container_name: arduino-flash
+    network_mode: host
+    ipc: host
+    tty: true
+    devices:
+      - "/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0:/dev/arduino"
+    volumes:
+      - ../src/chassis_controller:/chassis_controller
+    command: 
+      /bin/bash -c "
+          cd /chassis_controller && 
+          zip -r interrupt.zip interrupt && 
+          arduino-cli lib install --zip-path interrupt.zip &&
+          arduino-cli compile --fqbn arduino:avr:mega /chassis_controller &&
+          arduino-cli upload -p /dev/arduino --fqbn arduino:avr:mega /chassis_controller"
