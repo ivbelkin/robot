@@ -1,0 +1,51 @@
+FROM nvcr.io/nvidia/l4t-jetpack:r35.3.1
+
+ENV DEBIAN_FRONTEND noninteractive
+
+# Install ROS1 Noetic
+RUN apt-get update && apt-get install --no-install-recommends -y \
+        gnupg \
+        lsb-release \
+        curl && \
+    sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list' && \
+    curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add - && \
+    apt-get update && apt-get install --no-install-recommends -y \
+        ros-noetic-ros-base \
+        ros-noetic-cv-bridge \
+        python3-rosdep \
+        python3-rosinstall \
+        python3-rosinstall-generator \
+        python3-wstool \
+        build-essential && \
+    rosdep init && \
+    rosdep update && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install --no-install-recommends -y \
+        git \
+        libyaml-cpp-dev \
+        libsoup2.4-dev \
+        libglew-dev \
+        ros-noetic-vision-msgs \
+        nano \
+        libgstreamer-plugins-bad1.0-dev \
+        libjson-glib-dev \
+        python3-pip \
+        ros-noetic-camera-calibration-parsers \
+        ros-noetic-image-transport \
+        ros-noetic-rosserial \
+        ros-noetic-rosserial-arduino \
+        ros-noetic-teleop-twist-keyboard \
+        libgstreamer-plugins-base1.0-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN python3 -m pip install -U jetson-stats
+
+ARG JETSON_UTILS_COMMIT=8b6c5ca
+RUN git clone https://github.com/dusty-nv/jetson-utils.git && \
+    git config --global --add safe.directory jetson-utils && \
+    cd jetson-utils && \
+    git checkout ${JETSON_UTILS_COMMIT} && \
+    mkdir build && cd build && \
+    cmake -DCMAKE_BUILD_TYPE=Release -DLSB_RELEASE_CODENAME="focal" .. && \
+    make -j${NUM_THREADS} install

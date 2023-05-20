@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  camera:
+    build:
+      context: ..
+      dockerfile: setup/Dockerfile.camera
+    image: ros:noetic-camera
+    container_name: camera
+    ipc: host
+    tty: true
+    volumes:
+      - camera_ws:/catkin_ws
+      - ../src/camera_driver:/catkin_ws/src/camera_driver
+    command: /bin/bash -c "
+      cd /catkin_ws &&
+      source /opt/ros/noetic/setup.bash &&
+      catkin_make -DCMAKE_BUILD_TYPE=Release"
+
+volumes:
+  camera_ws:

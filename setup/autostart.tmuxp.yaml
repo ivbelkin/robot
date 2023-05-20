@@ -17,8 +17,9 @@ windows:
     layout: tiled
     panes:
       - docker-compose -f setup/docker-compose-runtime.yaml up roscore
-      - sleep 10; docker-compose -f setup/docker-compose-runtime.yaml up lidar
-      - sleep 10; docker-compose -f setup/docker-compose-runtime.yaml up arduino
+      - sleep 30; docker-compose -f setup/docker-compose-runtime.yaml up lidar
+      - sleep 30; docker-compose -f setup/docker-compose-runtime.yaml up arduino
+      - sleep 30; docker-compose -f setup/docker-compose-runtime.yaml up camera
 
   - window_name: jtop
     panes:

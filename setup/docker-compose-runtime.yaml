@@ -33,3 +33,21 @@ services:
     devices:
       - "/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0:/dev/arduino"
     command: rosrun rosserial_arduino serial_node.py /dev/arduino
+
+  camera:
+    image: ros:noetic-camera
+    container_name: camera
+    network_mode: host
+    ipc: host
+    tty: true
+    volumes:
+      - camera_ws:/catkin_ws
+      - ../src/camera_driver:/catkin_ws/src/camera_driver
+      - /tmp/argus_socket:/tmp/argus_socket
+    command: /bin/bash -c "
+      cd /catkin_ws &&
+      source devel/setup.bash &&
+      roslaunch camera_driver camera.launch"
+
+volumes:
+  camera_ws:
